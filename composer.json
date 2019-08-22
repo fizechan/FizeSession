@@ -1,0 +1,20 @@
+{
+    "name": "fize/session",
+    "description": "session management library. produced by FizeChan.",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "FizeChan",
+            "email": "chenfengzhan@qq.com"
+        }
+    ],
+    "require": {
+		"php": ">=7.0.0",
+		"fize/db": "*@dev"
+	},
+	"autoload": {
+        "psr-4": {
+            "fize\\session\\": "src"
+        }
+    }
+}
