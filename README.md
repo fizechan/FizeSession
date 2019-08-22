@@ -1,0 +1,2 @@
+# FizeSession
+Session management library
