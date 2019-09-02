@@ -1,15 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cfz87
- * Date: 2018-06-20
- * Time: 12:37
- */
 
 namespace fize\session\handler;
 
+use SessionHandler;
 
-class Redis
+/**
+ * Redis方式Session管理器
+ * @package fize\session\handler
+ */
+class Redis extends SessionHandler
 {
 
 }

@@ -5,14 +5,14 @@ namespace fize\session\handler;
 
 
 use SessionHandler;
-use fize\db\mysql\Db;
-use fize\db\mysql\db\Pdo;
+use fize\db\Db;
 
 
 /**
- * Mysql数据库方式Session管理器
+ * 数据库方式Session管理器
+ * @package fize\session\handler
  */
-class Mysql extends SessionHandler
+class Database extends SessionHandler
 {
     /**
      * @var array
@@ -25,7 +25,7 @@ class Mysql extends SessionHandler
     protected $lifeTime = 3600;
 
     /**
-     * @var Pdo
+     * @var \fize\db\definition\Db 实际DB对象
      */
     private $db;
 
@@ -39,6 +39,7 @@ class Mysql extends SessionHandler
         if(isset($config['expire'])){
             $this->lifeTime = $config['expire'];
         }
+        $this->db = Db::connect($config);
     }
 
     /**
@@ -49,14 +50,7 @@ class Mysql extends SessionHandler
      */
     public function open($save_path, $session_name)
     {
-        $config = $this->config;
-        $prefix = isset($config['prefix']) ? $config['prefix'] : '';
-        $port = isset($config['port']) ? $config['port'] : null;
-        $charset = isset($config['charset']) ? $config['charset'] : 'utf8';
-        $opts = isset($config['opts']) ? $config['opts'] : [];
-        $socket = isset($config['socket']) ? $config['socket'] : null;
-        $this->db = Db::pdo($config['host'], $config['user'], $config['pwd'], $config['dbname'], $prefix, $port, $charset, $opts, $socket);
-        $this->db->table($this->config['tablename']);
+        $this->db->table($this->config['table']);
         return true;
     }
 
@@ -104,7 +98,11 @@ class Mysql extends SessionHandler
             'expire' => time() + $this->lifeTime,
             'data' => $session_data
         ];
-        $this->db->replace($data);
+        if($this->db->where(['id' => $session_id])->findOrNull()) {
+            $this->db->where(['id' => $session_id])->update($data);
+        } else {
+            $this->db->insert($data);
+        }
         return true;
     }
 
@@ -136,16 +134,11 @@ class Mysql extends SessionHandler
 
     /**
      * 初始化，如果尚未建立session表，可以运行该方法来建立表
+     * 适用于mysql
      * @param array $config
      */
     public static function init(array $config)
     {
-        $prefix = isset($config['prefix']) ? $config['prefix'] : '';
-        $port = isset($config['port']) ? $config['port'] : null;
-        $charset = isset($config['charset']) ? $config['charset'] : 'utf8';
-        $opts = isset($config['opts']) ? $config['opts'] : [];
-        $socket = isset($config['socket']) ? $config['socket'] : null;
-
         $sql = <<<EOF
 CREATE TABLE `{$config['tablename']}`  (
   `id` varchar(190) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
@@ -155,7 +148,7 @@ CREATE TABLE `{$config['tablename']}`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'Session保存配置' ROW_FORMAT = Compact
 EOF;
 
-        $db = Db::pdo($config['host'], $config['user'], $config['pwd'], $config['dbname'], $prefix, $port, $charset, $opts, $socket);
+        $db = Db::connect($config);
         $db->query($sql);
     }
 }

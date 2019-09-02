@@ -1,16 +1,14 @@
 <?php
-/**
- * Session管理类
- * @author Fize Chan
- * @version V1.0.0.20170111
- */
-
 
 namespace fize\session;
 
 
 use SessionHandler;
 
+/**
+ * Session管理类
+ * @package fize\session
+ */
 class Session
 {
 
@@ -221,10 +219,10 @@ class Session
      */
     public static function init($type, array $config = [], $register_shutdown = true)
     {
-        if($type == '' || $type == 'files'){  //原生模式
+        if ($type == '' || $type == 'files') {  //原生模式
             return;
         }
-        $class = '\\fize\\session\\handler\\' . ucfirst($type);
+        $class = '\\' . __NAMESPACE__ . '\\handler\\' . ucfirst($type);
         $handler = new $class($config);
         self::setSaveHandler($handler, $register_shutdown);
     }
