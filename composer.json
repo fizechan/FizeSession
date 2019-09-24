@@ -12,6 +12,9 @@
 		"php": ">=7.0.0",
 		"fize/db": "*@dev"
 	},
+    "require-dev": {
+        "phpunit/phpunit": "^8.0.0"
+    },
 	"autoload": {
         "psr-4": {
             "fize\\session\\": "src"

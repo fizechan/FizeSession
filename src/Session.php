@@ -13,10 +13,30 @@ class Session
 {
 
     /**
-     * 禁止实例化
+     * 实例化
+     * @param array $config 配置
      */
-    private function __construct()
+    public function __construct(array $config = [])
     {
+        $default_config = [
+            'auto_start'    => true,
+            'expire'        => null,
+            'module'        => null,
+            'name'          => null,
+            'id'            => null,
+            'limiter'       => null,
+            'path'          => null,
+            'cookie_params' => [],
+            'options'       => [],
+            'handler'       => [
+                'type'              => '',
+                'config'            => [],
+                'register_shutdown' => true
+            ]
+        ];
+        $config = array_merge($default_config, $config);
+        self::init($config['handler']['type'], $config['handler']['config'], $config['handler']['register_shutdown']);
+        self::start($config['auto_start'], $config['expire'], $config['module'], $config['name'], $config['id'], $config['limiter'], $config['path'], $config['cookie_params'], $config['options']);
     }
 
     /**
