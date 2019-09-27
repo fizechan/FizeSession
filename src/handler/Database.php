@@ -137,7 +137,7 @@ class Database extends SessionHandler
      * 适用于mysql
      * @param array $config
      */
-    public static function init(array $config)
+    public static function initMysql(array $config)
     {
         $sql = <<<EOF
 CREATE TABLE `{$config['tablename']}`  (
@@ -145,7 +145,7 @@ CREATE TABLE `{$config['tablename']}`  (
   `expire` int(11) NOT NULL,
   `data` blob NULL,
   UNIQUE INDEX `id`(`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'Session保存配置' ROW_FORMAT = Compact
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'Session配置' ROW_FORMAT = Compact
 EOF;
 
         $db = Db::connect($config);
