@@ -1,6 +1,6 @@
 {
     "name": "fize/session",
-    "description": "session management library. produced by FizeChan.",
+    "description": "session management library.",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -10,8 +10,8 @@
     ],
     "require": {
 		"php": ">=7.0.0",
-		"fize/db": "*@dev",
-        "fize/io": "=3.1.1"
+		"fize/db": "~2.1",
+        "fize/io": "~3.1"
 	},
     "require-dev": {
         "phpunit/phpunit": "^8.0.0"
