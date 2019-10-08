@@ -208,7 +208,7 @@ class Session
             session_set_cookie_params($lifetime, $name, $domain, $secure, $httponly);
         }
         $result = true;
-        if ($start || session_status() === PHP_SESSION_DISABLED) {
+        if ($start || session_status() === PHP_SESSION_NONE) {
             $result = session_start($options);
         }
         return $result;
