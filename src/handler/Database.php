@@ -10,7 +10,6 @@ use fize\db\Db;
 
 /**
  * 数据库方式Session管理器
- * @package fize\session\handler
  */
 class Database extends SessionHandler
 {

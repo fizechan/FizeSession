@@ -6,8 +6,7 @@ namespace fize\session;
 use SessionHandler;
 
 /**
- * Session管理类
- * @package fize\session
+ * Session底层类
  */
 class Session
 {
@@ -245,45 +244,5 @@ class Session
         $class = '\\' . __NAMESPACE__ . '\\handler\\' . ucfirst($type);
         $handler = new $class($config);
         self::setSaveHandler($handler, $register_shutdown);
-    }
-
-    /**
-     * 获取一个缓存
-     * @param string $name 缓存名
-     * @param mixed $default 默认值
-     * @return mixed
-     */
-    public static function get($name, $default = null)
-    {
-        return isset($_SESSION[$name]) ? $_SESSION[$name] : $default;
-    }
-
-    /**
-     * 查看指定缓存是否存在
-     * @param string $name 缓存名
-     * @return bool
-     */
-    public static function has($name)
-    {
-        return isset($_SESSION[$name]);
-    }
-
-    /**
-     * 设置一个缓存
-     * @param string $name 缓存名
-     * @param mixed $value 缓存值
-     */
-    public static function set($name, $value)
-    {
-        $_SESSION[$name] = $value;
-    }
-
-    /**
-     * 删除一个缓存
-     * @param string $name 缓存名
-     */
-    public static function remove($name)
-    {
-        unset($_SESSION[$name]);
     }
 }

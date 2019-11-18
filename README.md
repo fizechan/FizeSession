@@ -1,2 +1,2 @@
 # FizeSession
-Session management library
+Session 底层管理
