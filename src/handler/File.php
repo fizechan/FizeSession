@@ -56,7 +56,7 @@ class File implements SessionHandlerInterface
 
     /**
      * 读取 Session
-     * @param string $session_id
+     * @param string $session_id 会话 ID
      * @return string
      */
     public function read($session_id)
