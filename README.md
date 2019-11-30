@@ -10,7 +10,7 @@ FizeSession 允许您将会话数据存放在任意的位置，无论是数据�
 
 FizeSession 可以进行处理器选择，因此您可以根据系统环境自行选择 Session 处理器。
 
-FizeSession 有非常完善的参考文档，且其功能追求简洁明了，相信您会喜欢上这样的缓存类库。
+FizeSession 有非常完善的参考文档，且其功能追求简洁明了，相信您会喜欢上这样的 Session 管理类库。
 
 
 项目GitHub : [ https://github.com/fizechan/FizeSession ](https://github.com/fizechan/FizeSession)
