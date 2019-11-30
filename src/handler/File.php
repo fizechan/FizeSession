@@ -8,7 +8,7 @@ use fize\io\File as Fso;
 use fize\io\Directory;
 
 /**
- * 文件方式
+ * 文件
  *
  * 文件方式 Session 处理器
  */

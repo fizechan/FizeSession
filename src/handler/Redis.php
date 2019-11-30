@@ -5,7 +5,7 @@ namespace fize\session\handler;
 use SessionHandlerInterface;
 
 /**
- * Redis 方式
+ * Redis
  *
  * Redis 方式 Session 处理器
  * @todo 待实现

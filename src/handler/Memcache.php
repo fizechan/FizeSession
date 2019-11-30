@@ -5,7 +5,7 @@ namespace fize\session\handler;
 use SessionHandlerInterface;
 
 /**
- * Memcache 方式
+ * Memcache
  *
  * Memcache 方式 Session 处理器
  * @todo 待实现
