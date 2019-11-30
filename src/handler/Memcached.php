@@ -2,12 +2,15 @@
 
 namespace fize\session\handler;
 
-use SessionHandler;
+use SessionHandlerInterface;
 
 /**
- * Memcached方式Session管理器
+ * Memcached 方式
+ *
+ * Memcached 方式 Session 处理器
+ * @todo 待实现
  */
-class Memcached extends SessionHandler
+class Memcached implements SessionHandlerInterface
 {
 
     /**

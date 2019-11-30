@@ -2,12 +2,16 @@
 
 namespace fize\session\handler;
 
-use SessionHandler;
+use SessionHandlerInterface;
 
 /**
- * Memcache方式Session管理器
+ * Memcache 方式
+ *
+ * Memcache 方式 Session 处理器
+ * @todo 待实现
+ * @deprecated Memcache 官方已停止维护，不建议使用
  */
-class Memcache extends SessionHandler
+class Memcache implements SessionHandlerInterface
 {
 
     /**

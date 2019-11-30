@@ -2,12 +2,15 @@
 
 namespace fize\session\handler;
 
-use SessionHandler;
+use SessionHandlerInterface;
 
 /**
- * Redis方式Session管理器
+ * Redis 方式
+ *
+ * Redis 方式 Session 处理器
+ * @todo 待实现
  */
-class Redis extends SessionHandler
+class Redis implements SessionHandlerInterface
 {
 
     /**
