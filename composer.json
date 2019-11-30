@@ -1,6 +1,6 @@
 {
     "name": "fize/session",
-    "description": "Session 底层管理",
+    "description": "Session 底层管理类库",
     "license": "MIT",
     "authors": [
         {
