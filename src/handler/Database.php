@@ -31,6 +31,10 @@ class Database implements SessionHandlerInterface
      */
     public function __construct(array $config = [])
     {
+        $default_config = [
+            'table'  => 'session'
+        ];
+        $config = array_merge($default_config, $config);
         $this->config = $config;
     }
 
