@@ -82,7 +82,9 @@ class Session
             self::setSaveHandler($handler, $cfg_handler['register_shutdown']);
         }
 
-        self::start($config['options']);
+        if(self::status() == PHP_SESSION_NONE) {
+            self::start($config['options']);
+        }
     }
 
     /**
