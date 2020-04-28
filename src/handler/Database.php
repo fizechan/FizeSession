@@ -1,8 +1,6 @@
 <?php
 
-
 namespace fize\session\handler;
-
 
 use SessionHandlerInterface;
 use fize\db\Db;
@@ -21,7 +19,7 @@ class Database implements SessionHandlerInterface
     private $config;
 
     /**
-     * @var \fize\db\definition\Db 实际 DB 对象
+     * @var \fize\db\core\Db 实际 DB 对象
      */
     private $db;
 

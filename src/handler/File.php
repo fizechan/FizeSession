@@ -1,11 +1,10 @@
 <?php
 
-
 namespace fize\session\handler;
 
 use SessionHandlerInterface;
-use fize\io\File as Fso;
 use fize\io\Directory;
+use fize\io\File as Fso;
 
 /**
  * 文件
@@ -35,7 +34,7 @@ class File implements SessionHandlerInterface
 
     /**
      * 打开 session
-     * @param string $save_path 存储会话的路径
+     * @param string $save_path    存储会话的路径
      * @param string $session_name 会话名称
      * @return bool
      */
@@ -61,7 +60,7 @@ class File implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-        if(!Fso::exists($this->savePath . '/' . $session_id)) {
+        if (!Fso::exists($this->savePath . '/' . $session_id)) {
             return '';
         }
         $file = new Fso($this->savePath . '/' . $session_id);
@@ -70,7 +69,7 @@ class File implements SessionHandlerInterface
 
     /**
      * 写入 Session
-     * @param string $session_id 会话 ID
+     * @param string $session_id   会话 ID
      * @param string $session_data 会话数据
      * @return bool
      */
@@ -102,17 +101,17 @@ class File implements SessionHandlerInterface
     public function gc($maxlifetime)
     {
         $items = Directory::scan($this->savePath);
-        foreach($items as $item){
+        foreach ($items as $item) {
             $a = $this->savePath . '/' . $item;
-            if(Directory::isDir($a)){
+            if (Directory::isDir($a)) {
                 continue;
-            }else{
+            } else {
                 $file = new Fso($a);
                 $atime = $file->atime();
                 $atgap = time() - $atime;
                 $ctime = $file->ctime();
                 $ctgap = time() - $ctime;
-                if($atgap > $maxlifetime && $ctgap > $maxlifetime) {
+                if ($atgap > $maxlifetime && $ctgap > $maxlifetime) {
                     $file->delete();
                 }
             }

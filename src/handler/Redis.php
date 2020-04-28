@@ -30,7 +30,7 @@ class Redis implements SessionHandlerInterface
     public function __construct(array $config = [])
     {
         $this->config = $config;
-        if(isset($config['expire'])){
+        if (isset($config['expire'])) {
             $this->lifeTime = $config['expire'];
         }
     }

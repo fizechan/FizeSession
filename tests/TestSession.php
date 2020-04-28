@@ -5,7 +5,7 @@ use fize\session\Session;
 use GuzzleHttp\Client;
 
 
-class SessionTest extends TestCase
+class TestSession extends TestCase
 {
 
     /**

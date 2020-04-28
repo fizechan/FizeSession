@@ -2,11 +2,10 @@
 
 namespace fize\session;
 
-
 use SessionHandler;
 
 /**
- * Session 底层类
+ * Session 底层
  */
 class Session
 {
@@ -82,7 +81,7 @@ class Session
             self::setSaveHandler($handler, $cfg_handler['register_shutdown']);
         }
 
-        if(self::status() == PHP_SESSION_NONE) {
+        if (self::status() == PHP_SESSION_NONE) {
             self::start($config['options']);
         }
     }
@@ -120,6 +119,7 @@ class Session
      * 创建新会话 ID
      * @param string $prefix 指定前缀
      * @return string
+     * @since PHP7.1
      */
     public static function createId($prefix = null)
     {
@@ -157,6 +157,7 @@ class Session
     /**
      * 执行会话数据垃圾收集
      * @return int 返回回收的会话个数
+     * @since PHP7.1
      */
     public static function gc()
     {
@@ -250,11 +251,11 @@ class Session
 
     /**
      * 设置会话 cookie 参数
-     * @param int $lifetime Cookie 的生命周期，以秒为单位。
-     * @param string $path cookie 的有效路径
-     * @param string $domain Cookie 的作用域
-     * @param bool $secure 是否仅在使用安全链接时可用
-     * @param bool $httponly 是否使用 httponly 标记
+     * @param int    $lifetime Cookie 的生命周期，以秒为单位。
+     * @param string $path     cookie 的有效路径
+     * @param string $domain   Cookie 的作用域
+     * @param bool   $secure   是否仅在使用安全链接时可用
+     * @param bool   $httponly 是否使用 httponly 标记
      * @return bool
      */
     public static function setCookieParams($lifetime, $path = null, $domain = null, $secure = false, $httponly = false)
@@ -264,8 +265,8 @@ class Session
 
     /**
      * 设置用户自定义会话存储函数
-     * @param SessionHandler $handler 处理器
-     * @param bool $register_shutdown 是否注册关闭函数
+     * @param SessionHandler $handler           处理器
+     * @param bool           $register_shutdown 是否注册关闭函数
      * @return bool
      */
     public static function setSaveHandler($handler, $register_shutdown = true)

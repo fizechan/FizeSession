@@ -9,7 +9,6 @@ use SessionHandlerInterface;
  *
  * Memcache 方式 Session 处理器
  * @todo 待实现
- * @deprecated Memcache 官方已停止维护，不建议使用
  */
 class Memcache implements SessionHandlerInterface
 {
@@ -31,7 +30,7 @@ class Memcache implements SessionHandlerInterface
     public function __construct(array $config = [])
     {
         $this->config = $config;
-        if(isset($config['expire'])){
+        if (isset($config['expire'])) {
             $this->lifeTime = $config['expire'];
         }
     }
