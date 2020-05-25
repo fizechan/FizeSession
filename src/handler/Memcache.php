@@ -2,13 +2,14 @@
 
 namespace fize\session\handler;
 
+use Memcache as MemcacheDriver;
+use RuntimeException;
 use SessionHandlerInterface;
 
 /**
  * Memcache
  *
  * Memcache 方式 Session 处理器
- * @todo 待实现
  */
 class Memcache implements SessionHandlerInterface
 {
@@ -19,9 +20,9 @@ class Memcache implements SessionHandlerInterface
     private $config;
 
     /**
-     * @var int Session有效时间
+     * @var MemcacheDriver Memcache对象
      */
-    protected $lifeTime = 3600;
+    protected $memcache;
 
     /**
      * 构造
@@ -29,9 +30,25 @@ class Memcache implements SessionHandlerInterface
      */
     public function __construct(array $config = [])
     {
+        $default_config = [
+            'servers' => [
+                ['localhost', 11211, true, 100]
+            ],
+            'expires' => null
+        ];
+        $config = array_merge($default_config, $config);
         $this->config = $config;
-        if (isset($config['expire'])) {
-            $this->lifeTime = $config['expire'];
+
+        $this->memcache = new MemcacheDriver();
+        foreach ($this->config['servers'] as $cfg) {
+            $host = $cfg[0];
+            $port = isset($cfg[1]) ? $cfg[1] : 11211;
+            $persistent = isset($cfg[2]) ? $cfg[2] : true;
+            $weight = isset($cfg[3]) ? $cfg[3] : 100;
+            $result = $this->memcache->addServer($host, $port, $persistent, $weight);
+            if (!$result) {
+                throw new RuntimeException("Error in addServer {$cfg[0]}.");
+            }
         }
     }
 
@@ -62,7 +79,11 @@ class Memcache implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-        return '';
+        $value = $this->memcache->get($session_id);
+        if ($value === false) {
+            return '';
+        }
+        return $value;
     }
 
     /**
@@ -73,7 +94,7 @@ class Memcache implements SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
-        return true;
+        return $this->memcache->set($session_id, $session_data, null, $this->config['expires']);
     }
 
     /**
@@ -83,7 +104,11 @@ class Memcache implements SessionHandlerInterface
      */
     public function destroy($session_id)
     {
-        return true;
+        $value = $this->memcache->get($session_id);
+        if ($value === false) {
+            return true;
+        }
+        return $this->memcache->delete($session_id);
     }
 
     /**

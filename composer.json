@@ -1,21 +1,26 @@
 {
-  "name": "fize/session",
-  "description": "Session 底层管理类库",
-  "license": "MIT",
   "authors": [
     {
       "name": "FizeChan",
       "email": "chenfengzhan@qq.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "fize\\session\\": "src"
+    }
+  },
+  "description": "Session 底层管理类库",
+  "license": "MIT",
+  "name": "fize/session",
   "require": {
     "php": ">=7.0.0"
   },
   "require-dev": {
     "fize/db": "~2.6.0",
     "fize/io": "~3.7.0",
-    "phpunit/phpunit": "~9.1.0",
-    "guzzlehttp/guzzle": "~6.5.0"
+    "guzzlehttp/guzzle": "~6.5.0",
+    "phpunit/phpunit": "~9.1.0"
   },
   "suggest": {
     "ext-memcache": "*",
@@ -23,10 +28,5 @@
     "ext-redis": "*",
     "fize/db": "~2.6.0",
     "fize/io": "~3.7.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "fize\\session\\": "src"
-    }
   }
 }

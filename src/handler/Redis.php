@@ -2,13 +2,14 @@
 
 namespace fize\session\handler;
 
+use Redis as RedisDriver;
+use RuntimeException;
 use SessionHandlerInterface;
 
 /**
  * Redis
  *
  * Redis 方式 Session 处理器
- * @todo 待实现
  */
 class Redis implements SessionHandlerInterface
 {
@@ -17,6 +18,11 @@ class Redis implements SessionHandlerInterface
      * @var array
      */
     private $config;
+
+    /**
+     * @var RedisDriver Redis对象
+     */
+    private $redis;
 
     /**
      * @var int Session有效时间
@@ -29,10 +35,31 @@ class Redis implements SessionHandlerInterface
      */
     public function __construct(array $config = [])
     {
-        $this->config = $config;
-        if (isset($config['expire'])) {
-            $this->lifeTime = $config['expire'];
+        $default_config = [
+            'host'    => '127.0.0.1',
+            'port'    => 6379,
+            'timeout' => 0,
+            'expires' => null
+        ];
+        $this->config = array_merge($default_config, $config);
+        $this->redis = new RedisDriver();
+        $result = $this->redis->connect($this->config['host'], $this->config['port'], $this->config['timeout']);
+        if (!$result) {
+            throw new RuntimeException($this->redis->getLastError());
         }
+        if (isset($this->config['password'])) {
+            $result = $this->redis->auth($this->config['password']);
+            if (!$result) {
+                throw new RuntimeException($this->redis->getLastError());
+            }
+        }
+        if (isset($this->config['dbindex'])) {
+            $result = $this->redis->select($this->config['dbindex']);
+            if (!$result) {
+                throw new RuntimeException($this->redis->getLastError());
+            }
+        }
+        $this->redis->setOption(RedisDriver::OPT_SERIALIZER, RedisDriver::SERIALIZER_PHP);
     }
 
     /**
@@ -62,7 +89,11 @@ class Redis implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-        return '';
+        $value = $this->redis->get($session_id);
+        if ($value === false) {
+            return '';
+        }
+        return $value;
     }
 
     /**
@@ -73,7 +104,13 @@ class Redis implements SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
-        return true;
+        $expires = $this->config['expires'];
+        if ($expires) {
+            $result = $this->redis->set($session_id, $session_data, ['ex' => $expires]);
+        } else {
+            $result = $this->redis->set($session_id, $session_data);
+        }
+        return $result;
     }
 
     /**
@@ -83,7 +120,8 @@ class Redis implements SessionHandlerInterface
      */
     public function destroy($session_id)
     {
-        return true;
+        $num = $this->redis->del($session_id);
+        return $num !== false;
     }
 
     /**

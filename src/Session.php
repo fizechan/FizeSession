@@ -119,7 +119,8 @@ class Session
      * 创建新会话 ID
      * @param string $prefix 指定前缀
      * @return string
-     * @since PHP7.1
+     * @since        PHP7.1
+     * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
      */
     public static function createId($prefix = null)
     {
@@ -157,7 +158,8 @@ class Session
     /**
      * 执行会话数据垃圾收集
      * @return int 返回回收的会话个数
-     * @since PHP7.1
+     * @since        PHP7.1
+     * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
      */
     public static function gc()
     {

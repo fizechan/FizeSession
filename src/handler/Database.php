@@ -2,9 +2,10 @@
 
 namespace fize\session\handler;
 
+use RuntimeException;
 use SessionHandlerInterface;
 use fize\db\Db;
-
+use fize\db\core\Db as DbCore;
 
 /**
  * 数据库
@@ -19,7 +20,7 @@ class Database implements SessionHandlerInterface
     private $config;
 
     /**
-     * @var \fize\db\core\Db 实际 DB 对象
+     * @var DbCore 实际 DB 对象
      */
     private $db;
 
@@ -30,7 +31,7 @@ class Database implements SessionHandlerInterface
     public function __construct(array $config = [])
     {
         $default_config = [
-            'table'  => 'session'
+            'table' => 'session'
         ];
         $config = array_merge($default_config, $config);
         $this->config = $config;
@@ -38,7 +39,7 @@ class Database implements SessionHandlerInterface
 
     /**
      * 打开 session
-     * @param string $save_path 存储会话的路径
+     * @param string $save_path    存储会话的路径
      * @param string $session_name 会话名称
      * @return bool
      */
@@ -68,7 +69,7 @@ class Database implements SessionHandlerInterface
     public function read($session_id)
     {
         $row = $this->db->table($this->config['table'])->where(['id' => $session_id])->findOrNull();
-        if(!$row) {
+        if (!$row) {
             return '';
         }
         $this->db->table($this->config['table'])->where(['id' => $session_id])->update(['atime' => time()]);
@@ -77,19 +78,19 @@ class Database implements SessionHandlerInterface
 
     /**
      * 写入 Session
-     * @param string $session_id 会话 ID
+     * @param string $session_id   会话 ID
      * @param string $session_data 会话数据
      * @return bool
      */
     public function write($session_id, $session_data)
     {
         $data = [
-            'id' => $session_id,
-            'data' => $session_data,
+            'id'    => $session_id,
+            'data'  => $session_data,
             'atime' => time(),
             'ctime' => time()
         ];
-        if($this->db->table($this->config['table'])->where(['id' => $session_id])->findOrNull()) {
+        if ($this->db->table($this->config['table'])->where(['id' => $session_id])->findOrNull()) {
             $this->db->table($this->config['table'])->where(['id' => $session_id])->update($data);
         } else {
             $this->db->table($this->config['table'])->insert($data);
@@ -124,14 +125,16 @@ class Database implements SessionHandlerInterface
     }
 
     /**
-     * 针对MySQL初始化
+     * 初始化
      *
      * 如果尚未建立 session 表，可以运行该方法来建立表
      * @param array $config
      */
-    public static function initMysql(array $config)
+    public static function init(array $config)
     {
-        $sql = <<<EOF
+        switch ($config['db']['type']) {
+            case 'mysql':
+                $sql = <<<SQL
 CREATE TABLE `{$config['table']}`  (
   `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'ID',
   `data` blob NULL DEFAULT NULL COMMENT '数据',
@@ -140,10 +143,13 @@ CREATE TABLE `{$config['table']}`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `id`(`id`) USING BTREE
 ) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会话' ROW_FORMAT = Dynamic
-EOF;
-        $dbcfg = $config['db'];
-        $mode = isset($dbcfg['mode']) ? $dbcfg['mode'] : null;
-        $db = Db::connect($dbcfg['type'], $dbcfg['config'], $mode);
+SQL;
+                break;
+            default:
+                throw new RuntimeException("暂不支持{$config['db']['type']}数据库驱动");
+        }
+        $mode = isset($config['db']['mode']) ? $config['db']['mode'] : null;
+        $db = Db::connect($config['db']['type'], $config['db']['config'], $mode);
         $db->query($sql);
     }
 }

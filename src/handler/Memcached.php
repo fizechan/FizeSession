@@ -2,13 +2,14 @@
 
 namespace fize\session\handler;
 
+use Memcached as MemcachedDriver;
+use RuntimeException;
 use SessionHandlerInterface;
 
 /**
  * Memcached
  *
  * Memcached 方式 Session 处理器
- * @todo 待实现
  */
 class Memcached implements SessionHandlerInterface
 {
@@ -19,9 +20,9 @@ class Memcached implements SessionHandlerInterface
     private $config;
 
     /**
-     * @var int Session有效时间
+     * @var MemcachedDriver Memcached对象
      */
-    protected $lifeTime = 3600;
+    protected $memcached;
 
     /**
      * 构造
@@ -29,9 +30,20 @@ class Memcached implements SessionHandlerInterface
      */
     public function __construct(array $config = [])
     {
+        $default_config = [
+            'servers' => [
+                ['localhost', 11211, 0]
+            ],
+            'timeout' => 10,
+            'expires' => 0
+        ];
+        $config = array_merge($default_config, $config);
         $this->config = $config;
-        if (isset($config['expire'])) {
-            $this->lifeTime = $config['expire'];
+
+        $this->memcached = new MemcachedDriver();
+        $result = $this->memcached->addServers($this->config['servers']);
+        if (!$result) {
+            throw new RuntimeException($this->memcached->getResultMessage(), $this->memcached->getResultCode());
         }
     }
 
@@ -62,7 +74,11 @@ class Memcached implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-        return '';
+        $value = $this->memcached->get($session_id);
+        if ($this->memcached->getResultCode() === MemcachedDriver::RES_NOTFOUND) {
+            return '';
+        }
+        return $value;
     }
 
     /**
@@ -73,7 +89,7 @@ class Memcached implements SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
-        return true;
+        return $this->memcached->set($session_id, $session_data, $this->config['expires']);
     }
 
     /**
@@ -83,7 +99,11 @@ class Memcached implements SessionHandlerInterface
      */
     public function destroy($session_id)
     {
-        return true;
+        $result = $this->memcached->delete($session_id);
+        if ($this->memcached->getResultCode() == MemcachedDriver::RES_NOTFOUND) {
+            return true;
+        }
+        return $result;
     }
 
     /**
