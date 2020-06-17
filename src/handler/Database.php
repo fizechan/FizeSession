@@ -4,8 +4,8 @@ namespace fize\session\handler;
 
 use RuntimeException;
 use SessionHandlerInterface;
-use fize\db\Db;
-use fize\db\core\Db as DbCore;
+use fize\database\Db;
+use fize\database\core\Db as DbCore;
 
 /**
  * 数据库
@@ -45,7 +45,7 @@ class Database implements SessionHandlerInterface
      */
     public function open($save_path, $session_name)
     {
-        $dbcfg = $this->config['db'];
+        $dbcfg = $this->config['database'];
         $mode = isset($dbcfg['mode']) ? $dbcfg['mode'] : null;
         $this->db = Db::connect($dbcfg['type'], $dbcfg['config'], $mode);
         return true;
@@ -132,7 +132,7 @@ class Database implements SessionHandlerInterface
      */
     public static function init(array $config)
     {
-        switch ($config['db']['type']) {
+        switch ($config['database']['type']) {
             case 'mysql':
                 $sql = <<<SQL
 CREATE TABLE `{$config['table']}`  (
@@ -146,10 +146,10 @@ CREATE TABLE `{$config['table']}`  (
 SQL;
                 break;
             default:
-                throw new RuntimeException("暂不支持{$config['db']['type']}数据库驱动");
+                throw new RuntimeException("暂不支持{$config['database']['type']}数据库驱动");
         }
-        $mode = isset($config['db']['mode']) ? $config['db']['mode'] : null;
-        $db = Db::connect($config['db']['type'], $config['db']['config'], $mode);
+        $mode = isset($config['database']['mode']) ? $config['database']['mode'] : null;
+        $db = Db::connect($config['database']['type'], $config['database']['config'], $mode);
         $db->query($sql);
     }
 }

@@ -17,7 +17,7 @@
     "php": ">=7.0.0"
   },
   "require-dev": {
-    "fize/db": "~2.6.0",
+    "fize/database": "~3.0.0",
     "fize/io": "~3.7.0",
     "guzzlehttp/guzzle": "~6.5.0",
     "phpunit/phpunit": "~9.1.0"
@@ -26,7 +26,7 @@
     "ext-memcache": "*",
     "ext-memcached": "*",
     "ext-redis": "*",
-    "fize/db": "~2.6.0",
+    "fize/database": "~3.0.0",
     "fize/io": "~3.7.0"
   }
 }

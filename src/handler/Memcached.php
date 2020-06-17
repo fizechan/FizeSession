@@ -26,7 +26,7 @@ class Memcached implements SessionHandlerInterface
 
     /**
      * 构造
-     * @param array $config
+     * @param array $config 配置
      */
     public function __construct(array $config = [])
     {
@@ -48,9 +48,9 @@ class Memcached implements SessionHandlerInterface
     }
 
     /**
-     * 打开session
-     * @param string $save_path
-     * @param string $session_name
+     * 打开 session
+     * @param string $save_path    存储会话的路径
+     * @param string $session_name 会话名称
      * @return bool
      */
     public function open($save_path, $session_name)
@@ -68,8 +68,8 @@ class Memcached implements SessionHandlerInterface
     }
 
     /**
-     * 读取Session
-     * @param string $session_id
+     * 读取 Session
+     * @param string $session_id 会话 ID
      * @return string
      */
     public function read($session_id)
@@ -82,9 +82,9 @@ class Memcached implements SessionHandlerInterface
     }
 
     /**
-     * 写入Session
-     * @param string $session_id
-     * @param string $session_data
+     * 写入 Session
+     * @param string $session_id   会话 ID
+     * @param string $session_data 会话数据
      * @return bool
      */
     public function write($session_id, $session_data)
@@ -93,8 +93,8 @@ class Memcached implements SessionHandlerInterface
     }
 
     /**
-     * 删除Session
-     * @param string $session_id
+     * 删除 Session
+     * @param string $session_id 会话 ID
      * @return bool
      */
     public function destroy($session_id)
@@ -107,8 +107,8 @@ class Memcached implements SessionHandlerInterface
     }
 
     /**
-     * 垃圾回收Session
-     * @param int $maxlifetime
+     * 垃圾回收 Session
+     * @param int $maxlifetime 最长有效时间
      * @return bool
      */
     public function gc($maxlifetime)
