@@ -68,10 +68,10 @@ class Session
         }
         if (!empty($cookie_params)) {
             $lifetime = (int)$cookie_params['lifetime'];
-            $path = isset($cookie_params['path']) ? $cookie_params['path'] : null;
-            $domain = isset($cookie_params['domain']) ? $cookie_params['domain'] : null;
-            $secure = isset($cookie_params['secure']) ? $cookie_params['secure'] : false;
-            $httponly = isset($cookie_params['httponly']) ? $cookie_params['httponly'] : false;
+            $path = $cookie_params['path'] ?? null;
+            $domain = $cookie_params['domain'] ?? null;
+            $secure = $cookie_params['secure'] ?? false;
+            $httponly = $cookie_params['httponly'] ?? false;
             self::setCookieParams($lifetime, $path, $domain, $secure, $httponly);
         }
 
@@ -90,39 +90,38 @@ class Session
      * 丢弃会话数组更改并完成会话
      * @return bool
      */
-    public static function abort()
+    public static function abort(): bool
     {
         return session_abort();
     }
 
     /**
      * 读取或设置当前缓存的到期时间,以分钟为单位
-     * @param int $new_cache_expire 设置缓存到期时间
+     * @param int|null $new_cache_expire 设置缓存到期时间
      * @return int
      */
-    public static function cacheExpire($new_cache_expire = null)
+    public static function cacheExpire(int $new_cache_expire = null): int
     {
         return session_cache_expire($new_cache_expire);
     }
 
     /**
      * 读取或设置缓存限制器
-     * @param string $cache_limiter 缓存限制器的值
+     * @param string|null $cache_limiter 缓存限制器的值
      * @return string
      */
-    public static function cacheLimiter($cache_limiter = null)
+    public static function cacheLimiter(string $cache_limiter = null): string
     {
         return session_cache_limiter($cache_limiter);
     }
 
     /**
      * 创建新会话 ID
-     * @param string $prefix 指定前缀
+     * @param string|null $prefix 指定前缀
      * @return string
      * @since        PHP7.1
-     * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
      */
-    public static function createId($prefix = null)
+    public static function createId(string $prefix = null): string
     {
         return session_create_id($prefix);
     }
@@ -132,7 +131,7 @@ class Session
      * @param string $data 编码后的数据
      * @return bool
      */
-    public static function decode($data)
+    public static function decode(string $data): bool
     {
         return session_decode($data);
     }
@@ -141,7 +140,7 @@ class Session
      * 销毁当前会话中的全部数据
      * @return bool
      */
-    public static function destroy()
+    public static function destroy(): bool
     {
         return session_destroy();
     }
@@ -150,7 +149,7 @@ class Session
      * 将当前会话数据编码为一个字符串
      * @return string
      */
-    public static function encode()
+    public static function encode(): string
     {
         return session_encode();
     }
@@ -159,9 +158,8 @@ class Session
      * 执行会话数据垃圾收集
      * @return int 返回回收的会话个数
      * @since        PHP7.1
-     * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
      */
-    public static function gc()
+    public static function gc(): int
     {
         return session_gc();
     }
@@ -170,7 +168,7 @@ class Session
      * 获取当前会话 cookie 参数
      * @return array
      */
-    public static function getCookieParams()
+    public static function getCookieParams(): array
     {
         return session_get_cookie_params();
     }
@@ -179,17 +177,17 @@ class Session
      * 获取当前会话 ID
      * @return string
      */
-    public static function id()
+    public static function id(): string
     {
         return session_id();
     }
 
     /**
      * 获取或设置当前会话模块名称
-     * @param string $module 会话模块名称
+     * @param string|null $module 会话模块名称
      * @return string
      */
-    public static function moduleName($module = null)
+    public static function moduleName(string $module = null): string
     {
         if (is_null($module)) {
             return session_module_name();
@@ -199,10 +197,10 @@ class Session
 
     /**
      * 读取或设置会话名称
-     * @param string $name 会话名称
+     * @param string|null $name 会话名称
      * @return string
      */
-    public static function name($name = null)
+    public static function name(string $name = null): string
     {
         if (is_null($name)) {
             return session_name();
@@ -215,7 +213,7 @@ class Session
      * @param bool $delete 是否删除原有的session值对
      * @return bool
      */
-    public static function regenerateId($delete = false)
+    public static function regenerateId(bool $delete): bool
     {
         return session_regenerate_id($delete);
     }
@@ -240,10 +238,10 @@ class Session
 
     /**
      * 读取或设置当前会话的保存路径
-     * @param string $path 保存路径
+     * @param string|null $path 保存路径
      * @return string
      */
-    public static function savePath($path = null)
+    public static function savePath(string $path = null): string
     {
         if (is_null($path)) {
             return session_save_path();
@@ -253,14 +251,14 @@ class Session
 
     /**
      * 设置会话 cookie 参数
-     * @param int    $lifetime Cookie 的生命周期，以秒为单位。
-     * @param string $path     cookie 的有效路径
-     * @param string $domain   Cookie 的作用域
-     * @param bool   $secure   是否仅在使用安全链接时可用
-     * @param bool   $httponly 是否使用 httponly 标记
+     * @param int         $lifetime Cookie 的生命周期，以秒为单位。
+     * @param string|null $path     cookie 的有效路径
+     * @param string|null $domain   Cookie 的作用域
+     * @param bool        $secure   是否仅在使用安全链接时可用
+     * @param bool        $httponly 是否使用 httponly 标记
      * @return bool
      */
-    public static function setCookieParams($lifetime, $path = null, $domain = null, $secure = false, $httponly = false)
+    public static function setCookieParams(int $lifetime, string $path = null, string $domain = null, bool $secure = false, bool $httponly = false): bool
     {
         return session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
     }
@@ -271,7 +269,7 @@ class Session
      * @param bool           $register_shutdown 是否注册关闭函数
      * @return bool
      */
-    public static function setSaveHandler($handler, $register_shutdown = true)
+    public static function setSaveHandler(SessionHandler $handler, bool $register_shutdown = true): bool
     {
         return session_set_save_handler($handler, $register_shutdown);
     }
@@ -281,7 +279,7 @@ class Session
      * @param array $options 会话配置
      * @return bool
      */
-    public static function start($options = [])
+    public static function start(array $options = []): bool
     {
         return session_start($options);
     }
@@ -290,7 +288,7 @@ class Session
      * 获取当前会话状态
      * @return int
      */
-    public static function status()
+    public static function status(): int
     {
         return session_status();
     }
@@ -307,7 +305,7 @@ class Session
      * 保存会话数据并结束会话
      * @return bool
      */
-    public static function writeClose()
+    public static function writeClose(): bool
     {
         return session_write_close();
     }

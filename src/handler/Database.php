@@ -2,10 +2,10 @@
 
 namespace fize\session\handler;
 
+use fize\database\core\Db as DbCore;
+use fize\database\Db;
 use RuntimeException;
 use SessionHandlerInterface;
-use fize\database\Db;
-use fize\database\core\Db as DbCore;
 
 /**
  * 数据库
@@ -39,14 +39,14 @@ class Database implements SessionHandlerInterface
 
     /**
      * 打开 session
-     * @param string $save_path    存储会话的路径
-     * @param string $session_name 会话名称
+     * @param string $path 存储会话的路径
+     * @param string $name 会话名称
      * @return bool
      */
-    public function open($save_path, $session_name)
+    public function open($path, $name): bool
     {
         $dbcfg = $this->config['database'];
-        $mode = isset($dbcfg['mode']) ? $dbcfg['mode'] : null;
+        $mode = $dbcfg['mode'] ?? null;
         $this->db = Db::connect($dbcfg['type'], $dbcfg['config'], $mode);
         return true;
     }
@@ -55,7 +55,7 @@ class Database implements SessionHandlerInterface
      * 关闭 session
      * @return bool
      */
-    public function close()
+    public function close(): bool
     {
         $this->db = null;
         return true;
@@ -63,62 +63,62 @@ class Database implements SessionHandlerInterface
 
     /**
      * 读取 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return string
      */
-    public function read($session_id)
+    public function read($id): string
     {
-        $row = $this->db->table($this->config['table'])->where(['id' => $session_id])->findOrNull();
+        $row = $this->db->table($this->config['table'])->where(['id' => $id])->findOrNull();
         if (!$row) {
             return '';
         }
-        $this->db->table($this->config['table'])->where(['id' => $session_id])->update(['atime' => time()]);
+        $this->db->table($this->config['table'])->where(['id' => $id])->update(['atime' => time()]);
         return $row['data'];
     }
 
     /**
      * 写入 Session
-     * @param string $session_id   会话 ID
-     * @param string $session_data 会话数据
+     * @param string $id   会话 ID
+     * @param string $data 会话数据
      * @return bool
      */
-    public function write($session_id, $session_data)
+    public function write($id, $data): bool
     {
-        $data = [
-            'id'    => $session_id,
-            'data'  => $session_data,
+        $row = [
+            'id'    => $id,
+            'data'  => $data,
             'atime' => time(),
             'ctime' => time()
         ];
-        if ($this->db->table($this->config['table'])->where(['id' => $session_id])->findOrNull()) {
-            $this->db->table($this->config['table'])->where(['id' => $session_id])->update($data);
+        if ($this->db->table($this->config['table'])->where(['id' => $id])->findOrNull()) {
+            $this->db->table($this->config['table'])->where(['id' => $id])->update($row);
         } else {
-            $this->db->table($this->config['table'])->insert($data);
+            $this->db->table($this->config['table'])->insert($row);
         }
         return true;
     }
 
     /**
      * 删除 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return bool
      */
-    public function destroy($session_id)
+    public function destroy($id): bool
     {
-        $this->db->table($this->config['table'])->where(['id' => $session_id])->delete();
+        $this->db->table($this->config['table'])->where(['id' => $id])->delete();
         return true;
     }
 
     /**
      * 垃圾回收 Session
-     * @param int $maxlifetime 最长有效时间
+     * @param int $max_lifetime 最长有效时间
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($max_lifetime): bool
     {
         $map = [
-            'atime' => ['<', time() - $maxlifetime],
-            'ctime' => ['<', time() - $maxlifetime]
+            'atime' => ['<', time() - $max_lifetime],
+            'ctime' => ['<', time() - $max_lifetime]
         ];
         $this->db->table($this->config['table'])->where($map)->delete();
         return true;
@@ -148,7 +148,7 @@ SQL;
             default:
                 throw new RuntimeException("暂不支持{$config['database']['type']}数据库驱动");
         }
-        $mode = isset($config['database']['mode']) ? $config['database']['mode'] : null;
+        $mode = $config['database']['mode'] ?? null;
         $db = Db::connect($config['database']['type'], $config['database']['config'], $mode);
         $db->query($sql);
     }

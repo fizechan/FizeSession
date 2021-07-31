@@ -64,11 +64,11 @@ class Redis implements SessionHandlerInterface
 
     /**
      * 打开 session
-     * @param string $save_path    存储会话的路径
-     * @param string $session_name 会话名称
+     * @param string $path 存储会话的路径
+     * @param string $name 会话名称
      * @return bool
      */
-    public function open($save_path, $session_name)
+    public function open($path, $name): bool
     {
         return true;
     }
@@ -77,19 +77,19 @@ class Redis implements SessionHandlerInterface
      * 关闭session
      * @return bool
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }
 
     /**
      * 读取 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return string
      */
-    public function read($session_id)
+    public function read($id): string
     {
-        $value = $this->redis->get($session_id);
+        $value = $this->redis->get($id);
         if ($value === false) {
             return '';
         }
@@ -98,38 +98,38 @@ class Redis implements SessionHandlerInterface
 
     /**
      * 写入 Session
-     * @param string $session_id   会话 ID
-     * @param string $session_data 会话数据
+     * @param string $id   会话 ID
+     * @param string $data 会话数据
      * @return bool
      */
-    public function write($session_id, $session_data)
+    public function write($id, $data): bool
     {
         $expires = $this->config['expires'];
         if ($expires) {
-            $result = $this->redis->set($session_id, $session_data, ['ex' => $expires]);
+            $result = $this->redis->set($id, $data, ['ex' => $expires]);
         } else {
-            $result = $this->redis->set($session_id, $session_data);
+            $result = $this->redis->set($id, $data);
         }
         return $result;
     }
 
     /**
      * 删除 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return bool
      */
-    public function destroy($session_id)
+    public function destroy($id): bool
     {
-        $num = $this->redis->del($session_id);
+        $num = $this->redis->del($id);
         return $num !== false;
     }
 
     /**
      * 垃圾回收 Session
-     * @param int $maxlifetime 最长有效时间
+     * @param int $max_lifetime 最长有效时间
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($max_lifetime): bool
     {
         return true;
     }

@@ -42,23 +42,23 @@ class Memcache implements SessionHandlerInterface
         $this->memcache = new MemcacheDriver();
         foreach ($this->config['servers'] as $cfg) {
             $host = $cfg[0];
-            $port = isset($cfg[1]) ? $cfg[1] : 11211;
-            $persistent = isset($cfg[2]) ? $cfg[2] : true;
-            $weight = isset($cfg[3]) ? $cfg[3] : 100;
+            $port = $cfg[1] ?? 11211;
+            $persistent = $cfg[2] ?? true;
+            $weight = $cfg[3] ?? 100;
             $result = $this->memcache->addServer($host, $port, $persistent, $weight);
             if (!$result) {
-                throw new RuntimeException("Error in addServer {$cfg[0]}.");
+                throw new RuntimeException("Error in addServer $cfg[0].");
             }
         }
     }
 
     /**
      * 打开 session
-     * @param string $save_path    存储会话的路径
-     * @param string $session_name 会话名称
+     * @param string $path 存储会话的路径
+     * @param string $name 会话名称
      * @return bool
      */
-    public function open($save_path, $session_name)
+    public function open($path, $name): bool
     {
         return true;
     }
@@ -67,19 +67,19 @@ class Memcache implements SessionHandlerInterface
      * 关闭session
      * @return bool
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }
 
     /**
      * 读取 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return string
      */
-    public function read($session_id)
+    public function read($id): string
     {
-        $value = $this->memcache->get($session_id);
+        $value = $this->memcache->get($id);
         if ($value === false) {
             return '';
         }
@@ -88,35 +88,35 @@ class Memcache implements SessionHandlerInterface
 
     /**
      * 写入 Session
-     * @param string $session_id   会话 ID
-     * @param string $session_data 会话数据
+     * @param string $id   会话 ID
+     * @param string $data 会话数据
      * @return bool
      */
-    public function write($session_id, $session_data)
+    public function write($id, $data): bool
     {
-        return $this->memcache->set($session_id, $session_data, null, $this->config['expires']);
+        return $this->memcache->set($id, $data, null, $this->config['expires']);
     }
 
     /**
      * 删除 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return bool
      */
-    public function destroy($session_id)
+    public function destroy($id): bool
     {
-        $value = $this->memcache->get($session_id);
+        $value = $this->memcache->get($id);
         if ($value === false) {
             return true;
         }
-        return $this->memcache->delete($session_id);
+        return $this->memcache->delete($id);
     }
 
     /**
      * 垃圾回收 Session
-     * @param int $maxlifetime 最长有效时间
+     * @param int $max_lifetime 最长有效时间
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($max_lifetime): bool
     {
         return true;
     }

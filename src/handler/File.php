@@ -2,9 +2,9 @@
 
 namespace fize\session\handler;
 
-use SessionHandlerInterface;
 use fize\io\Directory;
-use fize\io\File as Fso;
+use fize\io\File as FizeFile;
+use SessionHandlerInterface;
 
 /**
  * 文件
@@ -34,13 +34,13 @@ class File implements SessionHandlerInterface
 
     /**
      * 打开 session
-     * @param string $save_path    存储会话的路径
-     * @param string $session_name 会话名称
+     * @param string $path 存储会话的路径
+     * @param string $name 会话名称
      * @return bool
      */
-    public function open($save_path, $session_name)
+    public function open($path, $name): bool
     {
-        $this->savePath = $save_path;
+        $this->savePath = $path;
         return true;
     }
 
@@ -48,70 +48,69 @@ class File implements SessionHandlerInterface
      * 关闭 session
      * @return bool
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }
 
     /**
      * 读取 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return string
      */
-    public function read($session_id)
+    public function read($id): string
     {
-        if (!Fso::exists($this->savePath . '/' . $session_id)) {
+        if (!FizeFile::exists($this->savePath . '/' . $id)) {
             return '';
         }
-        $file = new Fso($this->savePath . '/' . $session_id);
+        $file = new FizeFile($this->savePath . '/' . $id);
         return $file->getContents();
     }
 
     /**
      * 写入 Session
-     * @param string $session_id   会话 ID
-     * @param string $session_data 会话数据
+     * @param string $id   会话 ID
+     * @param string $data 会话数据
      * @return bool
      */
-    public function write($session_id, $session_data)
+    public function write($id, $data): bool
     {
-        $file = new Fso($this->savePath . '/' . $session_id, 'w+');
-        $file->open();
-        $file->write($session_data);
+        $file = new FizeFile($this->savePath . '/' . $id, 'w+');
+        $file->fwrite($data);
         return true;
     }
 
     /**
      * 删除 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return bool
      */
-    public function destroy($session_id)
+    public function destroy($id): bool
     {
-        $file = new Fso($this->savePath . '/' . $session_id);
+        $file = new FizeFile($this->savePath . '/' . $id);
         $file->delete();
         return true;
     }
 
     /**
      * 垃圾回收 Session
-     * @param int $maxlifetime 最长有效时间
+     * @param int $max_lifetime 最长有效时间
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($max_lifetime): bool
     {
-        $items = Directory::scan($this->savePath);
+        $items = (new Directory($this->savePath))->scan();
         foreach ($items as $item) {
             $a = $this->savePath . '/' . $item;
-            if (Directory::isDir($a)) {
+            if (Directory::exists($a)) {
                 continue;
             } else {
-                $file = new Fso($a);
-                $atime = $file->atime();
+                $file = new FizeFile($a);
+                $atime = $file->getATime();
                 $atgap = time() - $atime;
-                $ctime = $file->ctime();
+                $ctime = $file->getCTime();
                 $ctgap = time() - $ctime;
-                if ($atgap > $maxlifetime && $ctgap > $maxlifetime) {
+                if ($atgap > $max_lifetime && $ctgap > $max_lifetime) {
                     $file->delete();
                 }
             }

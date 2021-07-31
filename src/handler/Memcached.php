@@ -49,11 +49,11 @@ class Memcached implements SessionHandlerInterface
 
     /**
      * 打开 session
-     * @param string $save_path    存储会话的路径
-     * @param string $session_name 会话名称
+     * @param string $path 存储会话的路径
+     * @param string $name 会话名称
      * @return bool
      */
-    public function open($save_path, $session_name)
+    public function open($path, $name): bool
     {
         return true;
     }
@@ -62,19 +62,19 @@ class Memcached implements SessionHandlerInterface
      * 关闭session
      * @return bool
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }
 
     /**
      * 读取 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return string
      */
-    public function read($session_id)
+    public function read($id): string
     {
-        $value = $this->memcached->get($session_id);
+        $value = $this->memcached->get($id);
         if ($this->memcached->getResultCode() === MemcachedDriver::RES_NOTFOUND) {
             return '';
         }
@@ -83,23 +83,23 @@ class Memcached implements SessionHandlerInterface
 
     /**
      * 写入 Session
-     * @param string $session_id   会话 ID
-     * @param string $session_data 会话数据
+     * @param string $id   会话 ID
+     * @param string $data 会话数据
      * @return bool
      */
-    public function write($session_id, $session_data)
+    public function write($id, $data): bool
     {
-        return $this->memcached->set($session_id, $session_data, $this->config['expires']);
+        return $this->memcached->set($id, $data, $this->config['expires']);
     }
 
     /**
      * 删除 Session
-     * @param string $session_id 会话 ID
+     * @param string $id 会话 ID
      * @return bool
      */
-    public function destroy($session_id)
+    public function destroy($id): bool
     {
-        $result = $this->memcached->delete($session_id);
+        $result = $this->memcached->delete($id);
         if ($this->memcached->getResultCode() == MemcachedDriver::RES_NOTFOUND) {
             return true;
         }
@@ -108,10 +108,10 @@ class Memcached implements SessionHandlerInterface
 
     /**
      * 垃圾回收 Session
-     * @param int $maxlifetime 最长有效时间
+     * @param int $max_lifetime 最长有效时间
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($max_lifetime): bool
     {
         return true;
     }
