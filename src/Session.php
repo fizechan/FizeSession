@@ -119,7 +119,6 @@ class Session
      * 创建新会话 ID
      * @param string|null $prefix 指定前缀
      * @return string
-     * @since        PHP7.1
      */
     public static function createId(string $prefix = null): string
     {
@@ -157,7 +156,6 @@ class Session
     /**
      * 执行会话数据垃圾收集
      * @return int 返回回收的会话个数
-     * @since        PHP7.1
      */
     public static function gc(): int
     {
@@ -213,7 +211,7 @@ class Session
      * @param bool $delete 是否删除原有的session值对
      * @return bool
      */
-    public static function regenerateId(bool $delete): bool
+    public static function regenerateId(bool $delete = false): bool
     {
         return session_regenerate_id($delete);
     }

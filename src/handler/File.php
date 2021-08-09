@@ -4,6 +4,7 @@ namespace fize\session\handler;
 
 use fize\io\Directory;
 use fize\io\File as FizeFile;
+use SessionHandler;
 use SessionHandlerInterface;
 
 /**
@@ -11,7 +12,7 @@ use SessionHandlerInterface;
  *
  * 文件方式 Session 处理器
  */
-class File implements SessionHandlerInterface
+class File extends SessionHandler implements SessionHandlerInterface
 {
     /**
      * @var array 配置

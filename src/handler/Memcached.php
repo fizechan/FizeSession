@@ -1,9 +1,10 @@
-<?php
+<?php /** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace fize\session\handler;
 
 use Memcached as MemcachedDriver;
 use RuntimeException;
+use SessionHandler;
 use SessionHandlerInterface;
 
 /**
@@ -11,7 +12,7 @@ use SessionHandlerInterface;
  *
  * Memcached 方式 Session 处理器
  */
-class Memcached implements SessionHandlerInterface
+class Memcached extends SessionHandler implements SessionHandlerInterface
 {
 
     /**

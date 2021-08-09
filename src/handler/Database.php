@@ -5,6 +5,7 @@ namespace fize\session\handler;
 use fize\database\core\Db as DbCore;
 use fize\database\Db;
 use RuntimeException;
+use SessionHandler;
 use SessionHandlerInterface;
 
 /**
@@ -12,7 +13,7 @@ use SessionHandlerInterface;
  *
  * 数据库方式 Session 处理器
  */
-class Database implements SessionHandlerInterface
+class Database extends SessionHandler implements SessionHandlerInterface
 {
     /**
      * @var array 配置

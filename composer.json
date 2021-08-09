@@ -14,11 +14,11 @@
     }
   },
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.1.0"
   },
   "require-dev": {
     "fize/database": "^3.1.0",
-    "fize/io": "^4.1.1",
+    "fize/io": "^5.0.0",
     "guzzlehttp/guzzle": "^6.5.0",
     "phpunit/phpunit": "^9.5.0"
   },
@@ -28,6 +28,6 @@
     "ext-memcached": "*",
     "ext-redis": "*",
     "fize/database": "^3.1.0",
-    "fize/io": "^4.1.1"
+    "fize/io": "^5.0.0"
   }
 }

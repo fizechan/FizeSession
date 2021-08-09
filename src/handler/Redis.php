@@ -1,9 +1,10 @@
-<?php
+<?php /** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace fize\session\handler;
 
 use Redis as RedisDriver;
 use RuntimeException;
+use SessionHandler;
 use SessionHandlerInterface;
 
 /**
@@ -11,7 +12,7 @@ use SessionHandlerInterface;
  *
  * Redis 方式 Session 处理器
  */
-class Redis implements SessionHandlerInterface
+class Redis extends SessionHandler implements SessionHandlerInterface
 {
 
     /**
