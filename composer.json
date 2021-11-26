@@ -10,24 +10,29 @@
   ],
   "autoload": {
     "psr-4": {
-      "fize\\session\\": "src"
+      "Fize\\Session\\": "src"
     }
   },
   "require": {
     "php": ">=7.1.0"
-  },
-  "require-dev": {
-    "fize/database": "^3.1.0",
-    "fize/io": "^5.0.0",
-    "guzzlehttp/guzzle": "^6.5.0",
-    "phpunit/phpunit": "^9.5.0"
   },
   "suggest": {
     "php": ">=7.2.0",
     "ext-memcache": "*",
     "ext-memcached": "*",
     "ext-redis": "*",
-    "fize/database": "^3.1.0",
-    "fize/io": "^5.0.0"
+    "fize/database": "^4.0.0",
+    "fize/io": "^6.0.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    }
+  },
+  "require-dev": {
+    "fize/database": "^4.0.0",
+    "fize/io": "^6.0.0",
+    "guzzlehttp/guzzle": "^6.5.0",
+    "phpunit/phpunit": "^9.5.0"
   }
 }

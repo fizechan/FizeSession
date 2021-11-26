@@ -1,9 +1,10 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use fize\session\Session;
-use GuzzleHttp\Client;
+namespace Tests;
 
+use Fize\Session\Session;
+use GuzzleHttp\Client;
+use PHPUnit\Framework\TestCase;
 
 class TestSession extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\session;
+namespace Fize\Session;
 
 use SessionHandler;
 
