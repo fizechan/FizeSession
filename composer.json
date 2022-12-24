@@ -22,7 +22,7 @@
     "ext-memcached": "*",
     "ext-redis": "*",
     "fize/database": "^4.0.0",
-    "fize/io": "^7.0.0"
+    "fize/io": "^9.0.1"
   },
   "autoload-dev": {
     "psr-4": {
@@ -31,7 +31,7 @@
   },
   "require-dev": {
     "fize/database": "^4.0.0",
-    "fize/io": "^7.0.0",
+    "fize/io": "^9.0.1",
     "guzzlehttp/guzzle": "^6.5.0",
     "phpunit/phpunit": "^9.5.0"
   }
