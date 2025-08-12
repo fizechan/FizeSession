@@ -8,7 +8,7 @@
       "email": "chenfengzhan@qq.com"
     }
   ],
-  "version": "5.0.0",
+  "version": "5.1.0",
   "autoload": {
     "psr-4": {
       "Fize\\Session\\": "src"
