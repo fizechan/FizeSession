@@ -1,14 +1,15 @@
 <?php
 require_once "../../../vendor/autoload.php";
 
-use Fize\Session\Handler\File;
+use Fize\Session\Handler\FileHandler;
 use Fize\Session\Session;
 
-$class = '\\fize\\session\\handler\\File';
-$handler = new File();
+$handler = new FileHandler();
 Session::setSaveHandler($handler);
 Session::savePath(__DIR__ . '/../../temp');
 
 Session::start();
 
-echo '打开 session';
+Session::destroy();
+
+echo '删除 session';

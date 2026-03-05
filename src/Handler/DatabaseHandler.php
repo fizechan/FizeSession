@@ -13,7 +13,7 @@ use SessionHandlerInterface;
  *
  * 数据库方式 Session 处理器
  */
-class Database extends SessionHandler implements SessionHandlerInterface
+class DatabaseHandler extends SessionHandler implements SessionHandlerInterface
 {
     /**
      * @var array 配置

@@ -2,27 +2,28 @@
 
 namespace Fize\Session\Handler;
 
-use Fize\IO\Directory;
-use Fize\IO\File as FizeFile;
+use Memcached;
+use RuntimeException;
 use SessionHandler;
 use SessionHandlerInterface;
 
 /**
- * 文件
+ * Memcached
  *
- * 文件方式 Session 处理器
+ * Memcached 方式 Session 处理器
  */
-class File extends SessionHandler implements SessionHandlerInterface
+class MemcachedHandler extends SessionHandler implements SessionHandlerInterface
 {
+
     /**
-     * @var array 配置
+     * @var array
      */
     private $config;
 
     /**
-     * @var string 存储会话的路径
+     * @var Memcached Memcached对象
      */
-    private $savePath;
+    protected $memcached;
 
     /**
      * 构造
@@ -30,7 +31,21 @@ class File extends SessionHandler implements SessionHandlerInterface
      */
     public function __construct(array $config = [])
     {
+        $default_config = [
+            'servers' => [
+                ['localhost', 11211, 0]
+            ],
+            'timeout' => 10,
+            'expires' => 0
+        ];
+        $config = array_merge($default_config, $config);
         $this->config = $config;
+
+        $this->memcached = new Memcached();
+        $result = $this->memcached->addServers($this->config['servers']);
+        if (!$result) {
+            throw new RuntimeException($this->memcached->getResultMessage(), $this->memcached->getResultCode());
+        }
     }
 
     /**
@@ -41,12 +56,11 @@ class File extends SessionHandler implements SessionHandlerInterface
      */
     public function open($path, $name): bool
     {
-        $this->savePath = $path;
         return true;
     }
 
     /**
-     * 关闭 session
+     * 关闭session
      * @return bool
      */
     public function close(): bool
@@ -61,11 +75,11 @@ class File extends SessionHandler implements SessionHandlerInterface
      */
     public function read($id): string
     {
-        if (!FizeFile::exists($this->savePath . '/' . $id)) {
+        $value = $this->memcached->get($id);
+        if ($this->memcached->getResultCode() === Memcached::RES_NOTFOUND) {
             return '';
         }
-        $file = new FizeFile($this->savePath . '/' . $id);
-        return $file->getContents();
+        return $value;
     }
 
     /**
@@ -76,9 +90,7 @@ class File extends SessionHandler implements SessionHandlerInterface
      */
     public function write($id, $data): bool
     {
-        $file = new FizeFile($this->savePath . '/' . $id, 'w+');
-        $file->fwrite($data);
-        return true;
+        return $this->memcached->set($id, $data, $this->config['expires']);
     }
 
     /**
@@ -88,9 +100,11 @@ class File extends SessionHandler implements SessionHandlerInterface
      */
     public function destroy($id): bool
     {
-        $file = new FizeFile($this->savePath . '/' . $id);
-        $file->delete();
-        return true;
+        $result = $this->memcached->delete($id);
+        if ($this->memcached->getResultCode() == Memcached::RES_NOTFOUND) {
+            return true;
+        }
+        return $result;
     }
 
     /**
@@ -100,22 +114,7 @@ class File extends SessionHandler implements SessionHandlerInterface
      */
     public function gc($max_lifetime): bool
     {
-        $items = (new Directory($this->savePath))->scan();
-        foreach ($items as $item) {
-            $a = $this->savePath . '/' . $item;
-            if (Directory::exists($a)) {
-                continue;
-            } else {
-                $file = new FizeFile($a);
-                $atime = $file->getATime();
-                $atgap = time() - $atime;
-                $ctime = $file->getCTime();
-                $ctgap = time() - $ctime;
-                if ($atgap > $max_lifetime && $ctgap > $max_lifetime) {
-                    $file->delete();
-                }
-            }
-        }
         return true;
     }
+
 }

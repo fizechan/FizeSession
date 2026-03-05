@@ -1,7 +1,7 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use Fize\Session\Handler\Database;
+use Fize\Session\Handler\DatabaseHandler;
 use Fize\Session\Session;
 
 $config = [
@@ -16,7 +16,7 @@ $config = [
     ],
     'table' => 'sys_session'
 ];
-$handler = new Database($config);
+$handler = new DatabaseHandler($config);
 Session::setSaveHandler($handler);
 
 Session::start();

@@ -10,7 +10,7 @@ use SessionHandlerInterface;
  *
  * 模拟 Session 处理器，在WEB单元测试时很有用。
  */
-class Mock extends SessionHandler implements SessionHandlerInterface
+class MockHandler extends SessionHandler implements SessionHandlerInterface
 {
 
     /**

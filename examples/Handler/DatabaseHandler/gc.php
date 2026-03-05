@@ -1,7 +1,7 @@
 <?php
 require_once "../../../vendor/autoload.php";
 
-use Fize\Session\Handler\Database;
+use Fize\Session\Handler\DatabaseHandler;
 use Fize\Session\Session;
 
 $config = [
@@ -16,11 +16,12 @@ $config = [
     ],
     'table' => 'sys_session'
 ];
-$handler = new Database($config);
+$handler = new DatabaseHandler($config);
 Session::setSaveHandler($handler);
+Session::cacheExpire(1);
+Session::setCookieParams(60);
 
-Session::start();
+Session::start(['gc_maxlifetime' => 60]);
+Session::gc();
 
-Session::destroy();
-
-echo '删除 session';
+echo '垃圾回收 session';

@@ -1,7 +1,7 @@
 <?php
 require_once "../../../vendor/autoload.php";
 
-use Fize\Session\Handler\Database;
+use Fize\Session\Handler\DatabaseHandler;
 use Fize\Session\Session;
 
 $config = [
@@ -16,15 +16,11 @@ $config = [
     ],
     'table' => 'sys_session'
 ];
-$handler = new Database($config);
+$handler = new DatabaseHandler($config);
 Session::setSaveHandler($handler);
 
 Session::start();
 
-$_SESSION['admin'] = [
-    'name' => '中华人民共和国',
-    'age'  => 30,
-    'time' => date('Y-m-d H:i:s')
-];
+Session::writeClose();
 
-echo '写入 session';
+echo '关闭 session';

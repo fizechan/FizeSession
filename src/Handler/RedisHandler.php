@@ -2,17 +2,17 @@
 
 namespace Fize\Session\Handler;
 
-use Memcache as MemcacheDriver;
+use Redis;
 use RuntimeException;
 use SessionHandler;
 use SessionHandlerInterface;
 
 /**
- * Memcache
+ * Redis
  *
- * Memcache 方式 Session 处理器
+ * Redis 方式 Session 处理器
  */
-class Memcache extends SessionHandler implements SessionHandlerInterface
+class RedisHandler extends SessionHandler implements SessionHandlerInterface
 {
 
     /**
@@ -21,9 +21,14 @@ class Memcache extends SessionHandler implements SessionHandlerInterface
     private $config;
 
     /**
-     * @var MemcacheDriver Memcache对象
+     * @var Redis Redis对象
      */
-    protected $memcache;
+    private $redis;
+
+    /**
+     * @var int Session有效时间
+     */
+    protected $lifeTime = 3600;
 
     /**
      * 构造
@@ -32,25 +37,30 @@ class Memcache extends SessionHandler implements SessionHandlerInterface
     public function __construct(array $config = [])
     {
         $default_config = [
-            'servers' => [
-                ['localhost', 11211, true, 100]
-            ],
+            'host'    => '127.0.0.1',
+            'port'    => 6379,
+            'timeout' => 0,
             'expires' => null
         ];
-        $config = array_merge($default_config, $config);
-        $this->config = $config;
-
-        $this->memcache = new MemcacheDriver();
-        foreach ($this->config['servers'] as $cfg) {
-            $host = $cfg[0];
-            $port = $cfg[1] ?? 11211;
-            $persistent = $cfg[2] ?? true;
-            $weight = $cfg[3] ?? 100;
-            $result = $this->memcache->addServer($host, $port, $persistent, $weight);
+        $this->config = array_merge($default_config, $config);
+        $this->redis = new Redis();
+        $result = $this->redis->connect($this->config['host'], $this->config['port'], $this->config['timeout']);
+        if (!$result) {
+            throw new RuntimeException($this->redis->getLastError());
+        }
+        if (isset($this->config['password'])) {
+            $result = $this->redis->auth($this->config['password']);
             if (!$result) {
-                throw new RuntimeException("Error in addServer $cfg[0].");
+                throw new RuntimeException($this->redis->getLastError());
             }
         }
+        if (isset($this->config['dbindex'])) {
+            $result = $this->redis->select($this->config['dbindex']);
+            if (!$result) {
+                throw new RuntimeException($this->redis->getLastError());
+            }
+        }
+        $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
     }
 
     /**
@@ -80,7 +90,7 @@ class Memcache extends SessionHandler implements SessionHandlerInterface
      */
     public function read($id): string
     {
-        $value = $this->memcache->get($id);
+        $value = $this->redis->get($id);
         if ($value === false) {
             return '';
         }
@@ -95,7 +105,13 @@ class Memcache extends SessionHandler implements SessionHandlerInterface
      */
     public function write($id, $data): bool
     {
-        return $this->memcache->set($id, $data, null, $this->config['expires']);
+        $expires = $this->config['expires'];
+        if ($expires) {
+            $result = $this->redis->set($id, $data, ['ex' => $expires]);
+        } else {
+            $result = $this->redis->set($id, $data);
+        }
+        return $result;
     }
 
     /**
@@ -105,11 +121,8 @@ class Memcache extends SessionHandler implements SessionHandlerInterface
      */
     public function destroy($id): bool
     {
-        $value = $this->memcache->get($id);
-        if ($value === false) {
-            return true;
-        }
-        return $this->memcache->delete($id);
+        $num = $this->redis->del($id);
+        return $num !== false;
     }
 
     /**
