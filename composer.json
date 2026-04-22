@@ -34,6 +34,6 @@
     "fize/database": "^4.0.0",
     "fize/io": "^9.1.0",
     "guzzlehttp/guzzle": "^6.5.0",
-    "phpunit/phpunit": "^9.5.0"
+    "phpunit/phpunit": "^9.6.34"
   }
 }
