@@ -22,8 +22,8 @@
     "ext-memcache": "*",
     "ext-memcached": "*",
     "ext-redis": "*",
-    "fize/database": "^4.0.0",
-    "fize/io": "^9.1.0"
+    "fize/database": "*",
+    "fize/io": "*"
   },
   "autoload-dev": {
     "psr-4": {
@@ -31,9 +31,9 @@
     }
   },
   "require-dev": {
-    "fize/database": "^4.0.0",
-    "fize/io": "^9.1.0",
-    "guzzlehttp/guzzle": "^6.5.0",
-    "phpunit/phpunit": "^9.6.34"
+    "fize/database": "*",
+    "fize/io": "*",
+    "guzzlehttp/guzzle": "*",
+    "phpunit/phpunit": "*"
   }
 }

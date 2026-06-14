@@ -115,6 +115,7 @@ class DatabaseHandler extends SessionHandler implements SessionHandlerInterface
      * @param int $max_lifetime 最长有效时间
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
     {
         $map = [
