@@ -76,7 +76,7 @@ class Session
         }
 
         if ($cfg_handler['type'] != '' && $cfg_handler['type'] != 'files') {  //原生模式
-            $class = '\\' . __NAMESPACE__ . '\\Handler\\' . $cfg_handler['type'];
+            $class = '\\' . __NAMESPACE__ . '\\Handler\\' . $cfg_handler['type'] . 'Handler';
             $handler = new $class($cfg_handler['config']);
             self::setSaveHandler($handler, $cfg_handler['register_shutdown']);
         }
