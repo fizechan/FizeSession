@@ -134,24 +134,27 @@ class DatabaseHandler extends SessionHandler implements SessionHandlerInterface
      */
     public static function init(array $config)
     {
-        switch ($config['database']['type']) {
+        $dbcfg = $config['database'];
+        switch (strtolower($dbcfg['type'])) {
             case 'mysql':
                 $sql = <<<SQL
-CREATE TABLE `{$config['table']}`  (
-  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'ID',
+CREATE TABLE `{$config['table']}` (
+  `id` varchar(100) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT 'ID',
   `data` blob NULL DEFAULT NULL COMMENT '数据',
   `atime` int(10) NOT NULL COMMENT '访问时间',
   `ctime` int(10) NOT NULL COMMENT '生成时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `id`(`id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会话' ROW_FORMAT = Dynamic
+  UNIQUE INDEX `idx_id`(`id`) USING BTREE,
+  UNIQUE INDEX `idx_atime`(`atime`) USING BTREE,
+  UNIQUE INDEX `idx_ctime`(`ctime`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COMMENT = 'SESSION'
 SQL;
                 break;
             default:
-                throw new RuntimeException("暂不支持{$config['database']['type']}数据库驱动");
+                throw new RuntimeException("暂不支持{$dbcfg['type']}数据库驱动");
         }
-        $mode = $config['database']['mode'] ?? null;
-        $db = Db::connect($config['database']['type'], $config['database']['config'], $mode);
+        $mode = $dbcfg['mode'] ?? null;
+        $db = Db::connect($dbcfg['type'], $dbcfg['config'], $mode);
         $db->query($sql);
     }
 }
