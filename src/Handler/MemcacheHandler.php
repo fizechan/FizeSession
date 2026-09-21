@@ -11,6 +11,7 @@ use SessionHandlerInterface;
  * Memcache
  *
  * Memcache 方式 Session 处理器
+ * @deprecated 请使用`MemcachedHandler`
  */
 class MemcacheHandler extends SessionHandler implements SessionHandlerInterface
 {
