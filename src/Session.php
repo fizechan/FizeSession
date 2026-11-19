@@ -100,7 +100,7 @@ class Session
      * @param int|null $new_cache_expire 设置缓存到期时间
      * @return int
      */
-    public static function cacheExpire(int $new_cache_expire = null): int
+    public static function cacheExpire(?int $new_cache_expire = null): int
     {
         return session_cache_expire($new_cache_expire);
     }
@@ -110,7 +110,7 @@ class Session
      * @param string|null $cache_limiter 缓存限制器的值
      * @return string
      */
-    public static function cacheLimiter(string $cache_limiter = null): string
+    public static function cacheLimiter(?string $cache_limiter = null): string
     {
         return session_cache_limiter($cache_limiter);
     }
@@ -120,7 +120,7 @@ class Session
      * @param string|null $prefix 指定前缀
      * @return string
      */
-    public static function createId(string $prefix = null): string
+    public static function createId(?string $prefix = null): string
     {
         return session_create_id($prefix);
     }
@@ -185,7 +185,7 @@ class Session
      * @param string|null $module 会话模块名称
      * @return string
      */
-    public static function moduleName(string $module = null): string
+    public static function moduleName(?string $module = null): string
     {
         if (is_null($module)) {
             return session_module_name();
@@ -198,7 +198,7 @@ class Session
      * @param string|null $name 会话名称
      * @return string
      */
-    public static function name(string $name = null): string
+    public static function name(?string $name = null): string
     {
         if (is_null($name)) {
             return session_name();
@@ -239,7 +239,7 @@ class Session
      * @param string|null $path 保存路径
      * @return string
      */
-    public static function savePath(string $path = null): string
+    public static function savePath(?string $path = null): string
     {
         if (is_null($path)) {
             return session_save_path();
@@ -256,7 +256,7 @@ class Session
      * @param bool        $httponly 是否使用 httponly 标记
      * @return bool
      */
-    public static function setCookieParams(int $lifetime, string $path = null, string $domain = null, bool $secure = false, bool $httponly = false): bool
+    public static function setCookieParams(int $lifetime, ?string $path = null, ?string $domain = null, bool $secure = false, bool $httponly = false): bool
     {
         return session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
     }
